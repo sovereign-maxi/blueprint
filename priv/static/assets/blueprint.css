@@ -1,0 +1,1825 @@
+/* ═══════════════════════════════════════════════════════════════════
+   BLUEPRINT — Common Design System
+   ═══════════════════════════════════════════════════════════════════
+
+   Products override accent colours via CSS custom properties:
+
+     :root {
+       --bp-accent:         #ff8c00;
+       --bp-accent-hover:   #ffa033;
+       --bp-accent-dim:     rgba(255, 140, 0, 0.12);
+       --bp-accent-overlay: rgba(255, 140, 0, 0.03);
+     }
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* --- FONTS ---------------------------------------------------------- */
+
+/* JetBrains Mono — primary monospace font */
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Medium.woff2') format('woff2');
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-SemiBold.woff2') format('woff2');
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Bold.woff2') format('woff2');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+
+/* --- DESIGN TOKENS -------------------------------------------------- */
+
+:root {
+  /* Accent — override these per product */
+  --color-accent:         var(--bp-accent, #ff8c00);
+  --color-accent-hover:   var(--bp-accent-hover, #ffa033);
+  --color-accent-dim:     var(--bp-accent-dim, rgba(255, 140, 0, 0.12));
+  --color-accent-overlay: var(--bp-accent-overlay, rgba(255, 140, 0, 0.03));
+
+  /* Neutral grey — the universal passive/inactive counterpart to the
+   * accent (muted pill, form-error box, inactive states). Products may
+   * override --bp-neutral / --bp-neutral-tint to match their palette. */
+  --color-neutral:        var(--bp-neutral, #4c4c4c);
+  --color-neutral-tint:   var(--bp-neutral-tint, rgba(76, 76, 76, 0.4));
+
+  /* Data-table row height. Sized to fit a `.bp-btn-sm` without
+   * clipping so rows with a button action are the same height as
+   * rows whose action is bare text. Every `tbody tr` on `.bp-data-table`
+   * inherits this — change once, every table re-tunes. */
+  --bp-table-row-height: 2.5rem;
+
+  /* Neutral palette (shared) */
+  --color-bg:             #0a0a0a;
+  --color-bg-secondary:   #111111;
+  --color-bg-raised:      #1a1a1a;
+  --color-text:           #ccc;
+  --color-text-secondary: #999;
+  --color-text-muted:     #666;
+  --color-text-dim:       #555;
+  --color-border:         #222;
+  --color-border-light:   #333;
+  --color-border-faint:   #1a1a1a;
+  --color-profit:         #22c55e;
+  --color-loss:           #ef4444;
+  --color-warning:        #f59e0b;
+  --color-info:           #3b82f6;
+  --color-danger:         #ff3333;
+
+  /* Typography scale */
+  --font-2xs:     0.7rem;
+  --font-xs:      0.75rem;
+  --font-sm:      0.8rem;
+  --font-md:      0.875rem;
+  --font-ms:      0.9rem;
+  --font-base:    1rem;
+  --font-lg:      1.1rem;
+  --font-xl:      1.25rem;
+  --font-2xl:     1.5rem;
+  --font-3xl:     2rem;
+  --font-4xl:     3rem;
+  --font-5xl:     4rem;
+  --font-6xl:     5.5rem;
+
+  --transition: 0.2s ease;
+
+  /* Monospace stack — JetBrains Mono with platform fallbacks. */
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', 'Consolas', 'Liberation Mono', monospace;
+
+  /* Inline caret used by select / dropdown triggers after
+   * `appearance: none`. Stroke uses #888 to match --color-text-muted. */
+  --caret-down-svg: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.5' stroke-linecap='square'/></svg>");
+}
+
+/* --- RESET ---------------------------------------------------------- */
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { height: 100%; overflow: hidden; }
+
+body {
+  font-family: var(--font-mono);
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+[data-phx-main] { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+
+/* --- HEADER --------------------------------------------------------- */
+
+.bp-main-header {
+  position: sticky; top: 0; z-index: 50;
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+}
+
+.bp-header-container {
+  display: flex; align-items: center; gap: 1rem;
+  width: 100%; padding: 0 1rem; height: 3.5rem;
+}
+
+.bp-header-left {
+  display: flex; align-items: center; gap: 1rem;
+}
+
+.bp-terminal-header {
+  font-size: var(--font-2xl); font-weight: 700;
+  letter-spacing: 0.05em; color: var(--color-accent);
+  margin: 0; line-height: 1; text-decoration: none;
+}
+
+a.bp-terminal-header:hover { color: var(--color-accent-hover); }
+
+.bp-tagline {
+  color: var(--color-text-muted); font-size: var(--font-xs);
+  font-weight: 500; text-transform: uppercase;
+  letter-spacing: 0.05em; padding-left: 1rem;
+  border-left: 1px solid var(--color-border-light);
+}
+
+.bp-badge {
+  font-size: var(--font-xs); color: var(--color-accent); font-weight: 500;
+  padding: 0.35rem 0.65rem; border: 1px dashed var(--color-accent);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+.bp-header-spacer { margin-left: auto; }
+
+/* --- ANNOUNCEMENTS ------------------------------------------------- */
+
+.bp-announcements {
+  display: flex; flex-direction: column; gap: 0.25rem;
+}
+
+.bp-announcement {
+  padding: 0.5rem 0.75rem;
+  font-size: var(--font-sm);
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  border-left: 3px solid var(--color-accent);
+  background: var(--color-bg-secondary);
+}
+
+.bp-announcement strong { color: var(--color-text); }
+.bp-announcement a { color: var(--color-accent); text-decoration: underline; }
+.bp-announcement a:hover { color: var(--color-text); }
+
+.bp-announcement.warning { border-left-color: var(--color-accent); }
+.bp-announcement.critical { border-left-color: var(--color-danger); }
+.bp-announcement.info { border-left-color: var(--color-text-muted); }
+
+/* --- SUB-NAV -------------------------------------------------------- */
+
+.bp-sub-nav {
+  display: flex; align-items: center; justify-content: flex-end;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg); flex-shrink: 0;
+  padding: 0.125rem 0; gap: 0.5rem;
+}
+
+.bp-nav-stat {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0.125rem 1rem;
+  font-size: var(--font-2xs); color: var(--color-text-dim);
+  text-transform: uppercase; letter-spacing: 0.04em;
+  font-weight: 500;
+}
+
+.bp-nav-stat span {
+  font-size: var(--font-2xs); font-weight: 600;
+  color: var(--color-accent); transition: all 0.3s ease;
+  text-transform: uppercase;
+}
+
+/* --- HEALTH BAR (10-segment indicator) ---------------------------- */
+
+.bp-health-bar {
+  display: flex; height: 10px;
+  gap: 2px; margin-right: auto; margin-left: 1rem;
+  align-items: center;
+}
+
+.bp-health-seg {
+  width: 8px; height: 10px;
+  border-radius: 1px;
+  background: var(--color-border-light);
+  transition: background 0.3s;
+}
+
+.bp-health-seg.filled { background: var(--color-accent); }
+
+.bp-nav-stat .accent { color: var(--color-accent); }
+.bp-nav-stat .profit { color: var(--color-profit); }
+.bp-nav-stat .loss { color: var(--color-loss); }
+.bp-nav-stat .warning { color: var(--color-warning); }
+.bp-nav-stat .muted { color: var(--color-text-secondary); }
+.bp-nav-stat-right { margin-left: auto; }
+
+/* Nav links (left side of sub-nav, PERP WALK style) */
+.bp-nav-links {
+  display: flex; align-items: center; gap: 0.75rem;
+  margin-left: auto; padding-right: 1rem;
+  border-right: 1px solid var(--color-border-light);
+}
+
+.bp-nav-link {
+  color: var(--color-text-muted); text-decoration: none;
+  font-size: var(--font-2xs); text-transform: uppercase;
+  letter-spacing: 0.08em; font-weight: 500;
+  transition: color var(--transition);
+}
+
+.bp-nav-link:hover { color: var(--color-accent); }
+
+.bp-nav-link.active {
+  color: var(--color-accent);
+  border-bottom: 1px solid var(--color-accent);
+  padding-bottom: 2px;
+}
+
+/* Dropdown (hover-based, PERP WALK style) */
+.bp-nav-dropdown { position: relative; }
+
+.bp-dropdown-menu {
+  position: absolute; top: 100%; left: 0;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  min-width: 120px; z-index: 100;
+  opacity: 0; visibility: hidden;
+  transform: translateY(-4px);
+  transition: all 0.15s ease;
+}
+
+.bp-nav-dropdown:hover .bp-dropdown-menu {
+  opacity: 1; visibility: visible; transform: translateY(0);
+}
+
+.bp-dropdown-item {
+  display: block; padding: 0.5rem 0.75rem;
+  font-size: var(--font-sm); font-weight: 600;
+  color: var(--color-text-secondary);
+  text-decoration: none; transition: all 0.15s ease;
+}
+
+.bp-dropdown-item:hover { background: var(--color-bg-raised); color: var(--color-accent); }
+.bp-dropdown-item.active { color: var(--color-accent); }
+
+/* --- LAYOUT --------------------------------------------------------- */
+
+.bp-root { flex: 1; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+
+.bp-page {
+  flex: 1; overflow-y: auto; padding: 0.5rem;
+  display: flex; flex-direction: column; gap: 0.5rem;
+  max-width: 1200px; width: 100%; margin: 0 auto;
+}
+
+.bp-page-wide {
+  flex: 1; overflow-y: auto; padding: 0.5rem;
+  display: flex; flex-direction: column; gap: 0.5rem;
+  width: 100%; max-width: none; margin: 0 auto;
+}
+
+/* --- GRID ----------------------------------------------------------- */
+
+.bp-grid { display: grid; gap: 0.5rem; }
+.bp-grid.cols-2   { grid-template-columns: 1fr 1fr; }
+.bp-grid.cols-3   { grid-template-columns: 1fr 1fr 1fr; }
+.bp-grid.cols-3-2 { grid-template-columns: 3fr 2fr; }
+.bp-grid.cols-4   { grid-template-columns: 1fr 1fr 1fr 1fr; }
+.bp-grid.cols-wallet { grid-template-columns: 3fr 2fr; flex: 1; min-height: 0; }
+.bp-grid.cols-wallet > :first-child { display: flex; flex-direction: column; gap: 0.5rem; min-height: 0; }
+.bp-grid.cols-wallet > :first-child > .bp-box { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.bp-grid.cols-wallet > :last-child { display: flex; flex-direction: column; }
+
+/* --- BOX (Card) ----------------------------------------------------- */
+
+.bp-box {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  display: flex; flex-direction: column;
+  overflow: hidden; min-height: 0;
+}
+
+.bp-panel-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 0.75rem; font-size: var(--font-sm); font-weight: 600;
+  color: var(--color-text-secondary); border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0; height: 2.25rem;
+}
+
+.bp-panel-title {
+  color: var(--color-accent); padding-left: 0.5rem;
+  margin: 0;
+  font-size: var(--font-sm); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  border-left: 2px solid var(--color-accent);
+}
+
+.bp-panel-meta { font-size: var(--font-2xs); color: var(--color-text-dim); }
+.bp-panel-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; min-height: 0; padding: 0.75rem; }
+
+.bp-panel-body { padding: 0.75rem; }
+
+/* --- LIVE BADGE ----------------------------------------------------- */
+
+.bp-badge-live {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  font-size: var(--font-2xs); color: var(--color-accent); font-weight: 600;
+  line-height: 1;
+}
+
+.bp-pulse-dot {
+  width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0;
+  background: var(--color-accent); animation: bp-pulse 3s infinite;
+}
+
+@keyframes bp-pulse {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 0.15; }
+}
+
+/* --- STAT ROWS ------------------------------------------------------ */
+
+.bp-stat-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.3rem 0.75rem; border-bottom: 1px solid var(--color-border);
+  font-size: var(--font-xs);
+}
+
+.bp-stat-row:last-child { border-bottom: none; margin-bottom: 0.75rem; }
+.bp-stat-label { color: var(--color-text-secondary); min-width: 3.5rem; font-weight: 600; }
+.bp-stat-value { color: var(--color-text-secondary); }
+.bp-stat-value.accent { color: var(--color-accent); font-weight: 600; }
+.bp-stat-value.profit { color: var(--color-profit); font-weight: 600; }
+.bp-stat-value.loss { color: var(--color-loss); font-weight: 600; }
+.bp-stat-value.warning { color: var(--color-warning); font-weight: 600; }
+
+/* --- TABLE ROWS ---------------------------------------------------- */
+
+.bp-table-row {
+  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr;
+  gap: 0.5rem; padding: 0.3rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--font-xs); align-items: center;
+  color: var(--color-text-secondary);
+}
+
+.bp-table-row:hover { background: rgba(255,255,255,0.01); }
+.bp-table-header { color: var(--color-text-dim); }
+.bp-table-dim { color: var(--color-text-dim); }
+
+/* --- EMPTY STATE ---------------------------------------------------- */
+
+.bp-empty-state {
+  padding: 2rem 1rem; text-align: center; color: var(--color-text-dim);
+  font-size: var(--font-xs); text-transform: uppercase;
+}
+
+/* --- FIELD INPUT ---------------------------------------------------- */
+
+.bp-field { margin-bottom: 0.75rem; }
+
+.bp-field-label {
+  display: block;
+  font-size: var(--font-xs); color: var(--color-text-dim);
+  text-transform: uppercase; margin-bottom: 0.25rem;
+}
+
+.bp-input-row { display: flex; border: 1px solid var(--color-border); }
+
+.bp-input {
+  flex: 1; background: var(--color-bg); border: none;
+  padding: 0.55rem 0.75rem; font-family: inherit;
+  font-size: var(--font-md); color: var(--color-text-secondary); outline: none;
+}
+
+.bp-input::placeholder { color: var(--color-text-muted); }
+.bp-input:focus-visible { outline: none; }
+
+.bp-input-badge {
+  padding: 0.55rem 0.75rem; font-size: var(--font-sm);
+  font-weight: 600; color: var(--color-accent);
+  border-left: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  display: flex; align-items: center; min-width: 4rem; justify-content: center;
+}
+
+input[type="number"] { -moz-appearance: textfield; }
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* Full form-chrome textarea — dark background, inherits font, tight
+ * padding, sensible min-height. Products that want a custom min-height
+ * override with their own rule; everything else composes. */
+.bp-textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 4rem;
+  padding: 0.5rem;
+  font-family: inherit;
+  font-size: var(--font-xs);
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+.bp-textarea:focus {
+  outline: 1px solid var(--color-accent);
+  outline-offset: -1px;
+  border-color: var(--color-accent);
+}
+.bp-input-error { border-color: var(--color-danger) !important; }
+
+.bp-field-error {
+  font-size: var(--font-sm); color: var(--color-danger);
+  margin-bottom: 0.25rem;
+}
+
+.bp-field-hint {
+  font-size: var(--font-sm); color: var(--color-accent);
+  margin-top: 0.25rem;
+}
+
+/* --- BUTTONS -------------------------------------------------------- */
+
+.bp-btn {
+  width: 100%; padding: 0.5rem; font-family: inherit;
+  font-size: var(--font-xs); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  cursor: pointer; transition: all var(--transition);
+}
+
+.bp-btn-primary {
+  background: transparent; color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+}
+
+.bp-btn-primary:hover:not(:disabled) { background: var(--color-accent); color: var(--color-bg); }
+
+.bp-btn-danger {
+  background: transparent; color: var(--color-loss);
+  border: 1px solid var(--color-loss);
+}
+
+.bp-btn-danger:hover:not(:disabled) { background: var(--color-loss); color: var(--color-bg); }
+
+.bp-btn-muted {
+  background: transparent; color: var(--color-text-muted);
+  border: 1px solid var(--color-border-light);
+}
+
+.bp-btn-muted:hover:not(:disabled) {
+  color: var(--color-text); border-color: var(--color-text-muted);
+}
+
+.bp-btn-default {
+  background: transparent; color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-light);
+}
+
+.bp-btn-default:hover:not(:disabled) { border-color: var(--color-accent); color: var(--color-accent); }
+
+.bp-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.bp-btn:focus-visible { outline: none; }
+
+/* Size modifiers. The .bp-btn base defaults to full width so
+ * panel-anchored form submits render as block. The modifiers
+ * below opt into compact / large / icon-square geometry without
+ * downstream apps needing to redeclare width, padding, font, or
+ * line-height. */
+
+.bp-btn-sm {
+  width: auto;
+  height: 1.85rem;
+  margin: 0;
+  padding: 0 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  line-height: 1;
+  font-size: var(--font-xs);
+  font-family: inherit;
+  vertical-align: middle;
+  text-decoration: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.bp-btn-lg {
+  height: 3.4rem;
+  padding: 0 1rem;
+  font-size: var(--font-md);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1.1;
+}
+
+.bp-btn-icon {
+  width: 2.5rem;
+  padding: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+/* --- STEPPER (numeric input flanked by −/+ icon buttons) ----------- */
+
+.bp-stepper { display: flex; flex-direction: column; gap: 0.4rem; }
+.bp-stepper-controls { display: flex; align-items: stretch; gap: 0.4rem; }
+.bp-stepper-controls > form { flex: 1; }
+.bp-stepper-input.bp-input { width: 100%; text-align: center; font-variant-numeric: tabular-nums; }
+.bp-stepper-input::-webkit-outer-spin-button,
+.bp-stepper-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.bp-stepper-input { -moz-appearance: textfield; appearance: textfield; }
+
+/* --- TABS ----------------------------------------------------------- */
+
+.bp-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+  height: 2.25rem;
+}
+
+.bp-tab {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  font-size: var(--font-2xs); text-transform: uppercase;
+  letter-spacing: 0.08em; font-weight: 600;
+  color: var(--color-text-muted); text-decoration: none;
+  border: 0; border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  background: transparent;
+  font-family: inherit;
+  padding: 0;
+  cursor: pointer;
+  transition: color var(--transition);
+  white-space: nowrap;
+}
+
+.bp-tab:hover { color: var(--color-text-secondary); }
+.bp-tab:focus-visible { outline: none; }
+.bp-tab.active,
+.bp-tab[aria-selected="true"] { color: var(--color-accent); border-bottom-color: var(--color-accent); }
+
+/* --- ARCH GRID (2-column key-value) --------------------------------- */
+
+.bp-arch-grid {
+  display: grid; grid-template-columns: 1fr 1fr; overflow: hidden;
+  margin: 0; padding: 0;
+}
+
+.bp-arch-grid dt, .bp-arch-grid dd { margin: 0; }
+
+.bp-arch-item {
+  padding: 0.45rem 0.75rem; display: flex; flex-direction: column;
+  gap: 0.1rem; border-bottom: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border); min-width: 0;
+}
+
+.bp-arch-item:nth-child(even) { border-right: none; }
+.bp-arch-item:nth-last-child(-n+2) { border-bottom: none; }
+
+/* --- STAT LIST (dl wrapper for stat_rows) --------------------------- */
+
+.bp-stat-list { margin: 0; padding: 0; }
+.bp-stat-list dt, .bp-stat-list dd { margin: 0; }
+
+/* --- Screen-reader-only utility ------------------------------------ */
+
+.bp-sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+.bp-arch-label {
+  font-size: var(--font-2xs); color: var(--color-accent);
+  font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+.bp-arch-value {
+  font-size: var(--font-xs); line-height: 1.5; color: var(--color-text-secondary);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* --- MODAL ---------------------------------------------------------- */
+
+.bp-modal-overlay {
+  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
+  display: flex; align-items: center; justify-content: center; z-index: 1000;
+  padding: 1rem;
+}
+
+/* Modal card = a `.bp-box` with an accent border and a max width.
+   Content composes via the standard `.bp-panel-header` +
+   `.bp-panel-body` scaffold — same shape as any panel on the page. */
+.bp-modal-card {
+  border-color: var(--color-accent);
+  max-width: 30rem; width: 100%;
+}
+
+/* QR display inside a modal body — white background so scanners
+   read cleanly against the dark card. `viewbox: true` SVGs have no
+   intrinsic width, so pin one on the inner element. */
+.bp-modal-qr {
+  display: flex; justify-content: center; margin: 0.5rem 0;
+}
+.bp-modal-qr-inner {
+  background: #fff; display: inline-block; padding: 0.5rem;
+  line-height: 0;
+}
+.bp-modal-qr-inner > svg {
+  display: block; width: 220px; height: 220px;
+}
+
+/* Bottom row of modal buttons. Prefer `.bp-btn-row` for the flex-1
+   equal-width look (PW modals); this variant centers content and
+   is kept for MINTED's confirm/cancel dialogs. */
+.bp-modal-actions {
+  display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;
+}
+.bp-modal-actions .bp-btn { padding: 0.5rem 2rem; }
+
+/* --- FLASH MESSAGES ------------------------------------------------- */
+
+.bp-flash {
+  position: fixed; top: 1rem; left: 50%; transform: translateX(-50%);
+  z-index: 1000; padding: 0.75rem 1.5rem; font-size: var(--font-sm);
+  font-weight: 500; border: 1px solid var(--color-border); cursor: pointer;
+  animation: bp-flash-in 0.3s ease-out; letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.bp-flash-info    { background: var(--color-accent-dim); color: var(--color-accent); }
+.bp-flash-success { background: var(--color-accent-dim); color: var(--color-accent); border-color: var(--color-accent); }
+.bp-flash-error   { background: rgba(204, 0, 0, 0.1); color: var(--color-danger); border-color: var(--color-danger); }
+
+@keyframes bp-flash-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(-1rem); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* --- FOOTER --------------------------------------------------------- */
+
+.bp-footer {
+  display: flex; align-items: center;
+  padding: 0.6rem 1rem;
+  border-top: 1px solid var(--color-border);
+  gap: 1rem; flex-shrink: 0; background: var(--color-bg);
+}
+
+.bp-footer-pips { display: flex; align-items: center; gap: 1rem; }
+
+.bp-footer-pip {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: var(--font-xs); letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--color-text-muted);
+}
+
+.bp-pip-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--color-border-faint); flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.bp-pip-dot.ok { background: var(--color-accent); }
+.bp-pip-dot.degraded { background: var(--color-warning); }
+.bp-pip-dot.critical { background: var(--color-danger); }
+.bp-pip-dot.offline { background: var(--color-text-dim); }
+
+.bp-footer-right {
+  display: flex; gap: 1rem; align-items: center;
+  font-size: var(--font-2xs); color: var(--color-text-dim); margin-left: auto;
+}
+
+.bp-footer-commit { font-size: var(--font-2xs); color: #2a2a2a; letter-spacing: 0.05em; }
+.bp-footer-commit span { color: var(--color-accent); }
+
+/* --- UTILITIES ------------------------------------------------------ */
+
+.bp-clickable { cursor: pointer; }
+
+/* --- SCROLLBAR ------------------------------------------------------ */
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border-light); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-dim); }
+
+/* --- RESPONSIVE ----------------------------------------------------- */
+
+@media (max-width: 900px) {
+  html { overflow: auto; }
+  body { height: auto; overflow: auto; }
+  .bp-root { overflow: visible; }
+  .bp-page { overflow: visible; }
+  .bp-grid.cols-2, .bp-grid.cols-3, .bp-grid.cols-3-2, .bp-grid.cols-4, .bp-grid.cols-wallet { grid-template-columns: 1fr; }
+  .bp-grid.cols-wallet { flex: none; }
+  .bp-grid.cols-wallet > :first-child > .bp-box { flex: none; }
+  .bp-sub-nav { flex-wrap: wrap; min-height: auto; padding: 0.4rem 1rem; gap: 0.75rem; }
+  .bp-hide-on-mobile { display: none; }
+  .bp-health-bar { margin-left: 0; }
+  .bp-nav-stat { padding-right: 0; }
+  .bp-flash-info, .bp-flash-success, .bp-flash-error { background: var(--color-bg-secondary); }
+  .bp-tagline { display: none; }
+  .bp-arch-grid { grid-template-columns: 1fr; }
+  .bp-arch-item { border-right: none; }
+  .bp-arch-item:nth-last-child(-n+2) { border-bottom: 1px solid var(--color-border); }
+  .bp-arch-item:last-child { border-bottom: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   BLUEPRINT PRIMITIVES (v2)
+   ═══════════════════════════════════════════════════════════════════
+   Layout / typography / colour / pill / table / paginator / filter /
+   nav-dropdown / empty-state / box / callout / page-fill / page-narrow.
+   Promoted from PW + TURBOS after both products reimplemented the
+   same layer under `pw-*` / `tb-*`. Products drop the prefix, keep
+   the accent override, and inherit these directly.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* --- LAYOUT PRIMITIVES ------------------------------------------- */
+/* Vertical flex column with a gap. -sm/-md/-lg are size modifiers. */
+.bp-stack-sm { display: flex; flex-direction: column; gap: 0.25rem; }
+.bp-stack-md { display: flex; flex-direction: column; gap: 0.5rem; }
+.bp-stack    { display: flex; flex-direction: column; gap: 0.75rem; }
+.bp-stack-lg { display: flex; flex-direction: column; gap: 1rem; }
+
+/* Generic horizontal flex row. Use bp-btn-row for equal-flex button row. */
+.bp-row { display: flex; gap: 0.5rem; }
+
+/* Forms inside a stacked body inherit the vertical rhythm. */
+.bp-stack > form,
+.bp-stack-lg > form,
+.bp-stack-md > form,
+.bp-stack-sm > form { display: flex; flex-direction: column; gap: inherit; }
+
+/* Equal-flex button row used in modal footers, form actions, etc. */
+.bp-btn-row { display: flex; gap: 0.5rem; }
+.bp-btn-row > .bp-btn { flex: 1; }
+
+/* Wrapping variant — for action rows where the button count may
+ * exceed the row width (portfolio resolve actions, form actions
+ * with 3+ buttons). Individual buttons keep their natural width
+ * instead of flex-stretching. */
+.bp-btn-row-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Padding utilities. bp-panel-body already supplies 0.75rem, so do
+ * NOT pile a pad utility on top of it. */
+.bp-pad-sm { padding: 0.5rem; }
+.bp-pad-md { padding: 0.75rem; }
+.bp-pad-lg { padding: 1rem; }
+
+/* --- TYPOGRAPHY PRIMITIVES --------------------------------------- */
+.bp-label {
+  font-size: var(--font-2xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-dim);
+}
+
+.bp-ui-label {
+  font-size: var(--font-2xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-dim);
+}
+
+.bp-lead {
+  font-size: var(--font-xs);
+  color: var(--color-text-dim);
+  line-height: 1.5;
+}
+
+.bp-help {
+  font-size: var(--font-xs);
+  color: var(--color-text-dim);
+  line-height: 1.4;
+}
+
+.bp-mono {
+  font-family: var(--font-mono);
+  font-size: var(--font-2xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.bp-tabular { font-variant-numeric: tabular-nums; }
+
+/* --- COLOUR PRIMITIVES ------------------------------------------- */
+/* Utility text-colour classes. The `td` selectors bump the
+ * specificity so these utilities keep winning inside table cells
+ * (bp-mini-table / bp-data-table both set a default `color` on
+ * `tbody td` which would otherwise override the class). */
+.bp-color-accent, td.bp-color-accent { color: var(--color-accent); }
+.bp-color-grey,   td.bp-color-grey   { color: var(--color-neutral); }
+.bp-color-warn,   td.bp-color-warn   { color: var(--color-warning); }
+.bp-color-loss,   td.bp-color-loss   { color: var(--color-loss); }
+.bp-color-info,   td.bp-color-info   { color: var(--color-info); }
+.bp-color-dim,    td.bp-color-dim    { color: var(--color-text-dim); }
+
+/* --- BOX VARIANTS ------------------------------------------------ */
+/* Primary bordered container — nested summary boxes / info panels. */
+.bp-box-inner {
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  padding: 0.75rem;
+}
+
+.bp-box-faint {
+  border: 1px solid var(--color-border-faint);
+  background: var(--color-bg-secondary);
+  padding: 1.25rem 0.75rem;
+}
+
+.bp-box-error {
+  border: 1px solid var(--color-neutral);
+  background: var(--color-neutral-tint);
+  padding: 0.6rem 0.75rem;
+}
+
+.bp-callout {
+  padding: 0.6rem;
+  border-left: 2px solid currentColor;
+  font-size: var(--font-xs);
+  line-height: 1.5;
+}
+
+/* --- FLASH OVERRIDES --------------------------------------------- */
+/* Default .bp-flash inherits a dim border that disappears against
+ * the accent-tinted background. Force visible accent / danger
+ * borders on all three variants. */
+.bp-flash {
+  border-width: 1px;
+  border-style: solid;
+}
+
+.bp-flash-info,
+.bp-flash-success { border-color: var(--color-accent); }
+.bp-flash-error   { border-color: var(--color-danger); }
+
+/* --- PAGE VARIANTS ----------------------------------------------- */
+/* Fill-to-fold: any page whose body should grow to fill the viewport
+ * down to the footer applies `bp-page-fill` on its `.bp-page-wide`
+ * wrapper. Panel inside becomes a flex column so its internal
+ * `.bp-table-scroll` can flex against the panel header. */
+.bp-page-fill > .bp-box {
+  flex: 1; min-height: 0;
+  display: flex; flex-direction: column;
+}
+
+/* Narrow centred page — login / welcome / single-input screens where
+ * bp-page's 1200px feels unbounded. */
+.bp-page-narrow { align-items: center; }
+.bp-page-narrow > .bp-box {
+  width: 100%;
+  max-width: 28rem;
+}
+
+/* Medium-width form page — multi-field create/edit surfaces where
+ * bp-page-narrow (28rem) is too tight but bp-page (1200rem) is too
+ * wide. Sits between the two. */
+.bp-page-form { max-width: 45rem; }
+
+/* --- FILL-TO-FOLD UTILITIES -------------------------------------- */
+/* Compose these to build a page whose contents naturally expand to
+ * the viewport fold: `.bp-fill-page` on the outer, `.bp-fill-col`
+ * on each column. Panel-stack helpers set the first/last-child
+ * flex behaviour so top panels hug their content and bottom panels
+ * soak up remaining vertical space. */
+.bp-fill-page { flex: 1; min-height: 0; }
+.bp-fill-col  { min-width: 0; min-height: 0; }
+.bp-fill-col > .bp-box:first-child { flex: 0 0 auto; }
+.bp-fill-col > .bp-box:last-child  { flex: 1; min-height: 0; }
+
+/* --- TABLE SCROLL ------------------------------------------------ */
+/* Keeps the panel header + filter row + table `<thead>` visible while
+ * only the rows scroll. */
+.bp-table-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.bp-table-scroll > .bp-empty-fill {
+  flex: 1;
+  min-height: 0;
+}
+
+/* --- EMPTY STATE ------------------------------------------------- */
+.bp-empty-fill {
+  flex: 1; min-height: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.bp-empty { padding: 0.75rem; }
+
+/* --- PAGINATOR --------------------------------------------------- */
+/* Fixed-height row pinned to the bottom of a scrolling panel. Prev/
+ * next are semantically buttons but visually plain dim text controls
+ * that brighten to accent on hover. */
+.bp-paginator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-top: 1px solid var(--color-border-faint);
+  background: transparent;
+  flex-shrink: 0;
+  font-size: var(--font-2xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+}
+
+.bp-paginator-btn {
+  font-family: inherit;
+  font-size: var(--font-2xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.12s ease;
+}
+
+.bp-paginator-btn:hover:not(:disabled) { color: var(--color-accent); }
+.bp-paginator-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.bp-paginator-status {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+
+.bp-paginator-range,
+.bp-paginator-total { color: var(--color-text); }
+
+.bp-paginator-sep,
+.bp-paginator-page { color: var(--color-text-dim); }
+
+/* --- FILTER ROW -------------------------------------------------- */
+/* Single filter bar split into two groups: categories on the left,
+ * status filters pushed to the right via margin-left: auto on the
+ * right group. Same pill spacing in both groups. */
+.bp-filter-row {
+  display: flex; flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-border-faint);
+  flex-shrink: 0;
+}
+
+/* Inside a modal the panel-body already provides horizontal padding —
+   flush filter rows + stat rows to that inner edge, not double up. */
+.bp-modal-card .bp-filter-row,
+.bp-modal-card .bp-stat-row {
+  padding-left: 0; padding-right: 0;
+}
+
+.bp-filter-group {
+  display: flex; flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.bp-filter-group > li { margin: 0; padding: 0; }
+
+.bp-filter-group-right { margin-left: auto; }
+
+/* Shared select-trigger chrome — applied to filter selects and to the
+ * page-nav dropdown trigger (a `<button>` faking the same control). */
+.bp-filter-select,
+.bp-nav-dropdown-trigger {
+  font-family: inherit;
+  font-weight: 600;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all var(--transition);
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: var(--caret-down-svg);
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+}
+
+.bp-filter-select:hover,
+.bp-filter-select:focus-visible,
+.bp-nav-dropdown-trigger:hover,
+.bp-nav-dropdown-trigger:focus-visible {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+.bp-filter-select {
+  font-size: var(--font-2xs);
+  padding: 0.3rem 1.8rem 0.3rem 0.7rem;
+}
+
+.bp-filter-select option {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text);
+}
+
+/* --- PILL (universal pill chrome) -------------------------------- */
+/* One pill chrome. Filter buttons, category and status labels in
+ * tables, side pills, state pills — all share this. Variants:
+ *   default    — neutral dim outline
+ *   .active    — brand accent (selected filter, ok/winner)
+ *   .muted     — neutral grey (inactive / refunded / passive)
+ *   .warning   — warning-amber
+ *   .critical  — loss-red (settled_loser only)
+ *
+ * Interactive variant (cursor + hover) only applies to <button>;
+ * spans / tds get the chrome but no button affordance. */
+.bp-pill {
+  font-family: inherit;
+  font-size: var(--font-2xs);
+  font-weight: 600;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+button.bp-pill {
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+button.bp-pill:hover {
+  color: var(--color-text-secondary);
+  border-color: var(--color-border-light);
+}
+
+.bp-pill.active {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  background: var(--color-accent-dim);
+}
+
+.bp-pill.muted {
+  color: var(--color-neutral);
+  border-color: var(--color-neutral);
+  background: var(--color-neutral-tint);
+}
+
+.bp-pill.warning {
+  color: var(--color-warning);
+  border-color: var(--color-warning);
+  background: color-mix(in srgb, var(--color-warning) 12%, transparent);
+}
+
+.bp-pill.critical {
+  color: var(--color-loss);
+  border-color: var(--color-loss);
+  background: color-mix(in srgb, var(--color-loss) 12%, transparent);
+}
+
+/* --- DATA TABLES ------------------------------------------------- */
+/* Shared chrome for every data table. Fixed-layout, sticky-thead,
+ * alternating-row, uppercase 2xs header type. Column widths and
+ * per-cell overrides stay in each per-screen block in product CSS.
+ *
+ * Column-width convention: each table has exactly ONE `width: auto`
+ * identity column (MARKET / HANDLE / QUESTION) that absorbs leftover
+ * space; every other column takes one of the four tokens below,
+ * chosen by content type — never an ad-hoc rem or a percentage. */
+.bp-data-table {
+  --bp-col-num: 8rem;    /* short enums: rank, counts, %, LONG/SHORT */
+  --bp-col-amount: 8rem; /* currency amounts: pool, volume, paid, stake */
+  --bp-col-label: 9rem;  /* relative times + single status pills */
+  --bp-col-wide: 13rem;  /* double pill pair, action/txid */
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: var(--font-xs);
+}
+
+.bp-data-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  font-size: var(--font-2xs);
+  letter-spacing: 0.06em;
+  color: var(--color-text-dim);
+  text-transform: uppercase;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  background: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.bp-data-table thead th:last-child { text-align: right; }
+
+/* Data-cell alignment: every column is left-aligned (td default),
+ * EXCEPT the last cell, which is right-aligned. Per-screen cell
+ * classes must not set td text-align: right — this rule is the
+ * single source of truth. */
+.bp-data-table tbody td {
+  padding: 0 0.75rem;
+  border-bottom: 1px solid var(--color-border-faint);
+  vertical-align: middle;
+}
+
+.bp-data-table tbody td:last-child { text-align: right; }
+
+.bp-data-table tbody tr { height: var(--bp-table-row-height); }
+.bp-data-table tbody tr:last-child td { border-bottom: none; }
+.bp-data-table tbody tr:hover { background: var(--color-bg-raised); }
+
+/* --- NAV DROPDOWN (page switcher) ------------------------------- */
+/* Trigger + hidden menu shown via `Phoenix.LiveView.JS.toggle/1` on
+ * the `hidden` attribute — zero JS runtime cost. */
+.bp-nav-dropdown {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 1rem;
+}
+
+/* The dropdown takes `margin-right: auto` (left-anchoring it and
+ * pushing the stat group right) when there's no auth-handle sibling.
+ * Logged-in pages have `.bp-auth-handle` directly after the dropdown
+ * — that handle takes the auto-margin instead. */
+.bp-sub-nav:not(:has(.bp-auth-handle)) > .bp-nav-dropdown {
+  margin-right: auto;
+}
+
+/* Trigger inherits shared `.bp-filter-select, .bp-nav-dropdown-trigger`
+ * chrome above — only size differs (one notch larger because this is
+ * the primary navigation control, not a filter). */
+.bp-nav-dropdown-trigger {
+  font-size: var(--font-xs);
+  padding: 0.35rem 1.9rem 0.35rem 0.8rem;
+}
+
+.bp-nav-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.125rem);
+  left: 0;
+  z-index: 50;
+  min-width: 100%;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+}
+
+.bp-nav-dropdown-menu[hidden] { display: none; }
+
+.bp-nav-dropdown-item {
+  font-family: inherit;
+  font-size: var(--font-xs);
+  font-weight: 600;
+  padding: 0.35rem 0.8rem;
+  color: var(--color-text);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: block;
+  white-space: nowrap;
+}
+
+.bp-nav-dropdown-item:hover,
+.bp-nav-dropdown-item:focus-visible {
+  background-color: var(--color-accent-dim);
+  color: var(--color-accent);
+  outline: none;
+}
+
+/* --- AUTH CHROME (header nav + sub-nav handle) ------------------- */
+/* Header nav slot — LOGIN link or handle + LOG OUT. */
+.bp-auth-nav {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* Sub-nav identity — pinned to the left edge while operational stats
+ * stay flush right (sub-nav default is justify-content: end). */
+.bp-auth-handle {
+  margin-right: auto;
+  font-family: var(--font-mono);
+  font-size: var(--font-sm);
+  color: var(--color-accent);
+}
+
+/* The <form> wrapping the Log Out button is a flex item itself —
+ * transparent passthrough so its height/baseline come from the
+ * inner <button>. */
+.bp-auth-form { display: contents; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   BLUEPRINT PRIMITIVES (v3) — second promotion pass
+   ═══════════════════════════════════════════════════════════════════
+   Proportional bar, mini-table, secret-block, copy-block, sparkline,
+   event feed, account-actions. Promoted after the initial layer
+   settled — these were reimplemented across TURBOS admin, MINTED
+   wallet, and PW auth flows under product-prefixed classes.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* --- PROPORTIONAL BAR (bipartite decile) ------------------------
+ * Two-segment horizontal bar rendered from decile width tokens.
+ * Used for longs-vs-shorts on TURBOS, yes-vs-no on PW, any binary
+ * fill. Composes .bp-bar (container) + .bp-bar-primary / .bp-bar-muted
+ * (segment colors) + .bp-bar-w-{0,10,20,...,100} (widths).
+ */
+.bp-bar {
+  display: flex;
+  width: 80px;
+  height: 4px;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.bp-bar-primary { background: var(--color-accent); }
+.bp-bar-muted   { background: var(--color-neutral); }
+
+.bp-bar-w-0   { width: 0%; }
+.bp-bar-w-10  { width: 10%; }
+.bp-bar-w-20  { width: 20%; }
+.bp-bar-w-30  { width: 30%; }
+.bp-bar-w-40  { width: 40%; }
+.bp-bar-w-50  { width: 50%; }
+.bp-bar-w-60  { width: 60%; }
+.bp-bar-w-70  { width: 70%; }
+.bp-bar-w-80  { width: 80%; }
+.bp-bar-w-90  { width: 90%; }
+.bp-bar-w-100 { width: 100%; }
+
+/* --- MINI TABLE ---------------------------------------------------
+ * Compact table for admin dashboards (replication telemetry, market
+ * detail summary rows). Distinct from `.bp-data-table` — no sticky
+ * thead, auto layout, denser vertical rhythm. Per-cell color
+ * classes stay in product CSS.
+ */
+.bp-mini-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.bp-mini-table thead th {
+  font-size: var(--font-2xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-dim);
+  text-align: left;
+  padding: 0.4rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.bp-mini-table tbody td {
+  font-size: var(--font-xs);
+  padding: 0.35rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+}
+
+.bp-mini-table tbody tr:last-child td { border-bottom: none; }
+
+/* Last-column right-alignment convention — matches bp-data-table.
+ * Every column is left-aligned by default (td/th default); the
+ * last column right-aligns so numeric summary values sit flush
+ * with the panel edge. Per-column .text-center / .text-right
+ * classes still override when a table needs a different rhythm. */
+.bp-mini-table thead th:last-child { text-align: right; }
+.bp-mini-table tbody td:last-child { text-align: right; }
+
+.bp-mini-table td.text-center,
+.bp-mini-table th.text-center { text-align: center; }
+
+.bp-mini-table td.text-right,
+.bp-mini-table th.text-right { text-align: right; }
+
+.bp-mini-table td.question {
+  max-width: 24rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-text);
+}
+
+/* --- SECRET BLOCK -------------------------------------------------
+ * Monospace, accent-bordered `<code>` block with triple-click
+ * select-all. Used for keyphrase / seed / deposit-address / cashuA
+ * token display. `-centered` and `-lg` modifiers handle alignment
+ * and size variants.
+ */
+.bp-secret-block {
+  display: block;
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: var(--font-2xs);
+  text-align: left;
+  padding: 0.5rem;
+  background: var(--color-accent-overlay);
+  border: 1px dashed var(--color-accent);
+  color: var(--color-accent);
+  user-select: all;
+  word-break: break-all;
+}
+
+.bp-secret-block-centered { text-align: center; }
+.bp-secret-block-lg { font-size: var(--font-lg); }
+
+/* --- COPY BLOCK ---------------------------------------------------
+ * Secret + copy-button stack. Vertical flex; the copy button sits
+ * below the secret. Pair with `.bp-copy-btn.bp-btn` for the
+ * centered-with-min-width button.
+ */
+.bp-copy-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.bp-copy-btn.bp-btn {
+  align-self: center;
+  min-width: 6rem;
+}
+
+/* --- ACCOUNT ACTIONS ---------------------------------------------
+ * Two-column grid for deposit / withdraw action buttons. Same
+ * dimensions as trade buttons for visual rhythm.
+ */
+.bp-account-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+/* --- SPARKLINE ----------------------------------------------------
+ * Inline SVG sparkline with label + value header + fixed 80px SVG
+ * body. Used by admin dashboards to trend recent metrics without
+ * committing to a full chart pane.
+ */
+.bp-sparkline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.bp-sparkline:last-child { margin-bottom: 0; }
+
+.bp-sparkline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: var(--font-2xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.bp-sparkline-label { color: var(--color-text-dim); font-weight: 600; }
+.bp-sparkline-value { color: var(--color-accent); font-weight: 600; }
+
+.bp-sparkline-svg {
+  width: 100%;
+  height: 80px;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-faint);
+  display: block;
+}
+
+/* --- EVENT FEED ---------------------------------------------------
+ * Vertical list of live events (admin alerts, activity streams).
+ * Each row has an icon badge (variant-coloured), a detail text
+ * span, and a right-aligned time. `.new` variant flashes the row
+ * with a brief accent-tinted background on arrival.
+ */
+@keyframes bp-row-flash {
+  0%   { background: var(--color-accent-dim); }
+  100% { background: transparent; }
+}
+
+.bp-event-feed {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bp-event-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--color-border-faint);
+  font-size: var(--font-xs);
+}
+
+.bp-event-row:last-child { border-bottom: none; }
+.bp-event-row.new { animation: bp-row-flash 1.5s ease; }
+
+.bp-event-icon {
+  font-size: var(--font-xs);
+  font-weight: 700;
+  padding: 0.2rem 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.bp-event-icon.ok       { background: var(--color-accent-dim); color: var(--color-accent); }
+.bp-event-icon.info     { background: color-mix(in srgb, var(--color-info) 12%, transparent); color: var(--color-info); }
+.bp-event-icon.warning  { background: color-mix(in srgb, var(--color-warning) 12%, transparent); color: var(--color-warning); }
+.bp-event-icon.critical { background: color-mix(in srgb, var(--color-loss) 12%, transparent); color: var(--color-loss); }
+
+.bp-event-detail {
+  flex: 1;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  min-width: 0;
+}
+
+.bp-event-time {
+  color: var(--color-text-dim);
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   BLUEPRINT PRIMITIVES (v4) — table cell utilities + panel head
+   ═══════════════════════════════════════════════════════════════════
+   Cell width + text utilities pair with `.bp-data-table` so products
+   stop writing `td.foo-cell-thing { width: var(--bp-col-xxx); }` per
+   table per column. `.bp-panel-head` + `.bp-panel-price` split out
+   the common panel-header pattern (pill row + right-flushed price).
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* --- CELL WIDTH UTILITIES ---------------------------------------- */
+/* Pair with a `.bp-data-table` column. Content-type tokens (num /
+ * amount / label / wide) resolve to the shared width vars. */
+/* Numeric-content cells carry `font-variant-numeric: tabular-nums`
+ * by default — the whole point of these tokens is that number
+ * columns line up. Non-numeric cells (label / wide / auto) leave
+ * this off so any embedded prose renders proportionally. */
+.bp-cell-num    { width: var(--bp-col-num);    font-variant-numeric: tabular-nums; }
+.bp-cell-amount { width: var(--bp-col-amount); font-variant-numeric: tabular-nums; }
+.bp-cell-label  { width: var(--bp-col-label); }
+.bp-cell-wide   { width: var(--bp-col-wide); }
+.bp-cell-auto   { width: auto; }
+
+/* --- CELL TEXT UTILITIES ----------------------------------------- */
+/* Nowrap + ellipsis for identity cells that can't wrap. */
+.bp-cell-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Text-styled link inside a data-table cell — inherits row hover
+ * behaviour, only the link colour changes on hover. */
+.bp-cell-link {
+  color: var(--color-text);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.bp-cell-link:hover { color: var(--color-accent); }
+
+/* --- INTERACTIVE (CLICKABLE) DATA-TABLE ROW --------------------- */
+/* Applies cursor + hover/focus background to the whole row. Use on
+ * `<tr>` for rows that link to a detail page. */
+.bp-data-table-row-interactive {
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.bp-data-table-row-interactive:hover,
+.bp-data-table-row-interactive:focus-visible {
+  background: var(--color-bg-raised);
+  outline: none;
+}
+
+/* --- PANEL HEAD -------------------------------------------------- */
+/* Row directly under the panel title bar hosting pills + a right-
+ * flushed accent price. Applied to a `<div>` inside `.bp-box`. */
+.bp-panel-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--color-border-faint);
+}
+
+/* Right-flushed big price display. Sits inside `.bp-panel-head` next
+ * to the pill row. Mono + tabular so digits don't reflow tick-to-tick. */
+.bp-panel-price {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+/* --- LEAD PARAGRAPH INLINE EMPHASIS ----------------------------- */
+/* `<strong>` inside `.bp-lead` — amounts, subaddresses, keyphrases. */
+.bp-lead strong {
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+}
+
+/* --- PLACEHOLDER TEXT -------------------------------------------- */
+/* Dim italic copy shown before a page has real data (portfolio,
+ * markets, etc.). Renders as a `<p>` inside a `.bp-panel-body`. */
+.bp-placeholder-text {
+  color: var(--color-text-dim);
+  font-style: italic;
+  padding: 0.75rem;
+  margin: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   BLUEPRINT PRIMITIVES (v5) — chart, CTA, admin, ratio bar
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* --- CHART (server-rendered SVG line chart) ---------------------- */
+/* Fixed-viewBox chart with padded plot area. Line + area fills in
+ * accent by default; products override colours per-indicator by
+ * re-declaring the specific selector (e.g. `.bp-chart-sma20`). */
+.bp-price-chart {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--color-border-faint);
+}
+
+.bp-price-chart-svg {
+  width: 100%;
+  height: 460px;
+  display: block;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-faint);
+  font-family: var(--font-mono);
+  font-size: var(--font-2xs);
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.bp-price-chart-empty {
+  height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-dim);
+  font-family: var(--font-mono);
+  font-size: var(--font-xs);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-faint);
+}
+
+.bp-chart-grid line {
+  stroke: var(--color-border-faint);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.bp-chart-y-labels text,
+.bp-chart-x-labels text {
+  fill: var(--color-text-dim);
+  font-size: var(--font-2xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.bp-chart-area { stroke: none; }
+
+.bp-chart-line {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.bp-chart-cursor {
+  stroke: var(--color-accent);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.7;
+}
+
+.bp-chart-dot {
+  fill: var(--color-accent);
+  stroke: var(--color-bg-secondary);
+  stroke-width: 1.5;
+}
+
+.bp-chart-cursor-label {
+  fill: var(--color-accent);
+  font-weight: 600;
+}
+
+.bp-chart-panel-baseline {
+  stroke: var(--color-border-faint);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.bp-chart-panel-label {
+  fill: var(--color-text-dim);
+  font-size: var(--font-2xs);
+  letter-spacing: 0.06em;
+}
+
+.bp-chart-rsi-line {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 1.25;
+  vector-effect: non-scaling-stroke;
+}
+
+.bp-chart-rsi-guide {
+  stroke: rgba(150, 150, 150, 0.3);
+  stroke-width: 0.75;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 2 3;
+}
+
+.bp-chart-rsi-guide-label {
+  fill: var(--color-text-dim);
+  font-size: var(--font-2xs);
+}
+
+/* --- OK PILL VARIANT (green, market-open / healthy states) ------ */
+.bp-pill.ok {
+  color: var(--color-profit);
+  border-color: var(--color-profit);
+  background: color-mix(in srgb, var(--color-profit) 12%, transparent);
+}
+
+/* --- CTA BUTTON (two-line vertical: label + hint) --------------- */
+/* Used for prominent action buttons where the primary label sits on
+ * top and a small hint (barrier, price, etc.) sits underneath. Pair
+ * with `.bp-btn.bp-btn-lg`. */
+.bp-cta-btn.bp-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+}
+
+.bp-cta-side {
+  font-size: var(--font-md);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.bp-cta-hint {
+  font-size: var(--font-2xs);
+  font-weight: 500;
+  color: currentColor;
+  opacity: 0.75;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* --- ADMIN PAGE LAYOUT ------------------------------------------ */
+/* Admin dashboard fits the viewport — the page itself does not
+ * scroll. Top stat grid + middle grid take their natural height; the
+ * bottom row soaks up remaining space and its panels scroll their
+ * feeds internally. */
+.bp-admin-page {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-height: 0;
+}
+
+.bp-admin-page > .bp-grid:last-child {
+  flex: 1;
+  min-height: 0;
+}
+
+.bp-admin-page > .bp-grid:last-child > .bp-box {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- BACK LINK -------------------------------------------------- */
+/* "◀ back" nav link — sits above a panel title on drill-down pages. */
+.bp-back {
+  padding: 0.5rem 0;
+  font-size: var(--font-2xs);
+  letter-spacing: 0.05em;
+}
+
+.bp-back a {
+  color: var(--color-text-dim);
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.bp-back a:hover { color: var(--color-accent); }
+
+/* --- RATIO BAR (labelled proportional bar) ---------------------- */
+/* Composes `.bp-bar` with left-aligned label and right-aligned pcts.
+ * Used for longs-vs-shorts, yes-vs-no, any binary ratio display. */
+.bp-ratio-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.75rem;
+  border-top: 1px solid var(--color-border-faint);
+}
+
+.bp-ratio-bar-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: var(--font-2xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-dim);
+}
+
+.bp-ratio-bar-pcts {
+  display: flex;
+  gap: 0.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Inside a ratio-bar the fill should span the full container width —
+ * the compact 80px default on `.bp-bar` is for inline sparkline uses
+ * (nav strips, table cells). Height stays 4px for a subtle strip. */
+.bp-ratio-bar .bp-bar { width: 100%; height: 6px; }
+
+/* --- COMPACT EVENT ROW (narrow-column feed variant) ------------- */
+/* Two-line row shape optimised for a narrow column (~1/6th of the
+ * viewport). Pair with `.bp-event-feed` for the container. Slots:
+ *   dir | price | lp
+ *   takers takers | amount
+ */
+.bp-event-row-compact {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas:
+    "dir price lp"
+    "takers takers amount";
+  gap: 0.15rem 0.5rem;
+  align-items: baseline;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-border-faint);
+  font-family: var(--font-mono);
+  font-size: var(--font-xs);
+}
+
+.bp-event-row-compact:last-child { border-bottom: none; }
+.bp-event-row-compact-dir     { grid-area: dir;     font-weight: 700; }
+.bp-event-row-compact-price   { grid-area: price;   color: var(--color-text-dim); }
+.bp-event-row-compact-lp      { grid-area: lp;      color: var(--color-accent); font-weight: 500; }
+.bp-event-row-compact-takers  { grid-area: takers;  color: var(--color-text-dim); font-variant-numeric: tabular-nums; }
+.bp-event-row-compact-amount  { grid-area: amount;  color: var(--color-loss); font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
